@@ -1,14 +1,35 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-function App() {
-  const [tiempo, setTiempo] = useState(0)
-  useEffect(() => {
-    const iniciar = setInterval(() => {setTiempo(tiempo => tiempo + 1)},1000);
-    
-    return () => {clearInterval(iniciar)}
+class App extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      tiempo: 0,
+      activo: false,
+      id: 0,
+    }
+    this.Inicio = this.Inicio.bind(this)
+    this.Avanzar = this.Avanzar.bind(this)
+  };
 
+Inicio = () => {
+  this.Intervalo = setInterval(this.Avanzar, 1000);
+  // this.setState = ({ activo: true})
+}
+
+Avanzar = () => {
+  // alert(this.state.tiempo);
+  this.setState({
+    tiempo: this.state.tiempo + 1
   })
+  ;
+}
+
+Fin = () => {
+  clearInterval(this.Intervalo)
+}
+  render() {
     return (
     <div className="App">
 
@@ -27,15 +48,16 @@ function App() {
 
     <p id="timer-label">{/*condicional segun estado Session or not*/}</p>
 
-    <p id="time-left">{tiempo > 60 ? Math.floor(tiempo / 60) : "00"}:{tiempo % 60}</p>
+    <p id="time-left">{this.state.tiempo > 60 ? Math.floor(this.state.tiempo / 60) : "00"}:{this.state.tiempo > 9 ? this.state.tiempo % 60 : "0"+this.state.tiempo}</p>
 
-    <button id="start_stop" onClick={null}>{/*Quizás ID guión medio?*/}Iniciar/Parar</button>
-    <button id="start_stop" onClick={null}>{/*Quizás ID guión medio?*/}Iniciar/Parar</button>
+    <button id="start_stop" onClick={this.Inicio}>{/*Quizás ID guión medio?*/}Iniciar/Parar</button>
+    <button id="start_stop" onClick={this.Fin}>{/*Quizás ID guión medio?*/}Iniciar/Parar</button>
 
-    <button id="reset">Resetear</button>
+    <button id="reset" onClick={null}>Resetear</button>
 
     </div>
   );
+}
 }
 
 export default App;
