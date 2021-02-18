@@ -1,141 +1,134 @@
 import './App.css';
-import React from 'react';
+import React, {useState, useRef} from 'react';
 
-class App extends React.Component{
-  constructor(props) {
-    super(props)
-    this.clip = React.createRef()
-    this.state = {
-      tiempo: 1500,
-      activo: false,
-      id: 0,
-      pausa: 5,
-      sesion: 25,
-      enSesion: true,
-      enPausa: false,
-      flagCero: true,
-      intervaloActivo: false,
-    }
-    this.inicioFin = this.inicioFin.bind(this)
-    this.avanzar = this.avanzar.bind(this)
+  // constructor(props) {
+  //   super(props)
+  //   this.clip = React.createRef()
+  //   this.state = {
+  //     tiempo: 1500,
+  //     activo: false,
+  //     id: 0,
+  //     pausa: 5,
+  //     sesion: 25,
+  //     enSesion: true,
+  //     enPausa: false,
+  //     flagCero: true,
+  //     intervaloActivo: false,
+  //   }
+  //   this.inicioFin = this.inicioFin.bind(this)
+  //   this.avanzar = this.avanzar.bind(this)
 
-  };
+  // };
+function App () {
 
-inicioFin = () => {
-  if (this.state.enSesion === true && this.state.flagCero === true) {
-    this.setState({ tiempo: this.state.sesion * 60})
+const [activo, setActivo] = useState(false);
+const [tiempo, setTiempo] = useState(1500);
+const [pausa, setPausa] = useState(0.1);
+const [sesion, setSesion] = useState(0.1);
+const [enSesion, setEnSesion] = useState(true);
+const [enPausa, setEnPausa] = useState(false);
+const [flagCero, setFlagCero] = useState(true);
+const [intervaloActivo, setIntervaloActivo] = useState(false);
+const intervalo = useRef(null);
+
+const inicioFin = () => {
+  if (enSesion === true && flagCero === true) {
+    setTiempo(sesion * 60)
   }
-  if (this.state.enPausa === true && this.state.flagCero === true) {
-    this.setState({ tiempo: this.state.pausa * 60})
+  if (enPausa === true && flagCero === true) {
+    setTiempo(pausa * 60)
   }
-  if (this.state.activo === true) {
-    clearInterval(this.Intervalo); this.setState({ intervaloActivo: false,}) ; //Donde existe el intervalo?
+  if (activo === true) {
+    clearInterval(intervalo.current); setIntervaloActivo(false);
   } else {
-      if (this.state.intervaloActivo === false) {this.Intervalo = setInterval(this.avanzar, 1000); this.setState({ intervaloActivo: true,})}
-    this.setState({ flagCero: false,})
+  if (intervaloActivo === false) {intervalo.current = setInterval(()=>console.log("a"), 1000); setIntervaloActivo(true)}
+    setFlagCero(false)
   }
-  this.setState({ activo: !this.state.activo})
+  setActivo(!activo)
 }
 
-avanzar = () => {
-  this.setState({
-    tiempo: this.state.tiempo - 1
-  });
-  if (this.state.tiempo < 0) {
-    if (this.state.enSesion === true) {
-      this.setState({ enPausa: true, enSesion: false, flagCero: true, activo: false,})
-      this.clip.current.play()
+const avanzar = () => {
+  setTiempo(tiempo - 1);
+  if (tiempo < 0) {
+    if (enSesion === true) {
+      setPausa(true); setEnSesion(false); setFlagCero(true); setActivo(false)
+      // this.clip.current.play()
       }
-    else if (this.state.enPausa === true) {
-      this.setState({ enPausa: false, enSesion: true, flagCero: true, activo: false,})
-      this.clip.current.play()
+    else if (enPausa === true) {
+      setPausa(false); setEnSesion(true); setFlagCero(true); setActivo(false)
+      // this.clip.current.play()
        };
-    this.inicioFin()
+    inicioFin()
   }
 }
 
-reset = () => {
-  clearInterval(this.Intervalo);
-  this.clip.current.pause() 
-  this.clip.current.currentTime = 0; //rewind
-  this.setState({
-    tiempo: 1500, activo: false, sesion: 25, pausa: 5, enSesion: true, enPausa: false, intervaloActivo: false, flagCero: true,
-  });
+const reset = () => {
+  clearInterval(intervalo.current);
+//   this.clip.current.pause() 
+//   this.clip.current.currentTime = 0; //rewind
+  setTiempo(1500); setActivo(false); setSesion(25); setPausa(5);
+  setEnSesion(true); setEnPausa(false); setIntervaloActivo(false); setFlagCero(true);
 }
 
-masPausa = () => {
-  if (this.state.pausa < 60) { 
-  this.setState({
-    pausa: this.state.pausa + 1
-  });
-  if (this.state.enPausa === true) {this.setState({ tiempo: (this.state.pausa + 1) * 60}) }
-} else {
-  return undefined
-}
+const masPausa = () => {
+  if (pausa < 60) { setPausa(pausa + 1);
+    if (enPausa === true) {setTiempo((pausa + 1) * 60) }
+  } else {
+    return undefined
+  }
 }
 
-menosPausa = () => {
-  if (this.state.pausa > 1) { 
-  this.setState({
-    pausa: this.state.pausa - 1
-  });
-  if (this.state.enPausa === true) {this.setState({ tiempo: (this.state.pausa - 1) * 60}) }
-} else {
-  return undefined
-}
+const menosPausa = () => {
+  if (pausa > 1) { setPausa(pausa - 1);
+    if (enPausa === true) {setTiempo((pausa - 1) * 60) }
+  } else {
+    return undefined
+  }
 }
 
-masSesion = () => {
-  if (this.state.sesion < 60) { 
-  this.setState({
-    sesion: this.state.sesion + 1
-  });
-  if (this.state.enSesion === true) {this.setState({ tiempo: (this.state.sesion + 1) * 60}) }
-} else {
-  return undefined
-}
+const masSesion = () => {
+  if (sesion < 60) { setSesion(sesion + 1);
+    if (enSesion === true) {setTiempo((sesion + 1) * 60) }
+  } else {
+    return undefined
+  }
 }
 
-menosSesion = () => {
-  if (this.state.sesion > 1) { 
-  this.setState({
-    sesion: this.state.sesion - 1
-  })
-  if (this.state.enSesion === true) {this.setState({ tiempo: (this.state.sesion -1) * 60}) }
-} else {
-  return undefined;
-}
-  ;
+const menosSesion = () => {
+  if (sesion > 1) { setSesion(sesion - 1)
+    if (enSesion === true) {setTiempo((sesion -1) * 60)}
+  } else {
+    return undefined;
+  }
 }
 
-  render() {
-    return (
+  return (
     <div className="App">
 
       <div className="subContenedor" id="contenedorPausa">
         <p id="break-label">Tiempo de pausa</p>
-        <input type="text" id="break-length" value={this.state.pausa} readOnly />
-        <button className="controlTiempo"id="break-decrement" onClick={this.menosPausa}>-</button>
-        <button className="controlTiempo"id="break-increment" onClick={this.masPausa}>+</button>
+        <input type="text" id="break-length" value={pausa} readOnly />
+        <button className="controlTiempo"id="break-decrement" onClick={menosPausa}>-</button>
+        <button className="controlTiempo"id="break-increment" onClick={masPausa}>+</button>
       </div>
 
       <div className="subContenedor" id="contenedorSesion">
         <p id="session-label">Largo de sesión</p>
-        <input type="text" id="session-length" value={this.state.sesion} readOnly />
-        <button className="controlTiempo"id="session-decrement" onClick={this.menosSesion}>-</button>
-        <button className="controlTiempo"id="session-increment" onClick={this.masSesion}>+</button>
+        <input type="text" id="session-length" value={sesion} readOnly />
+        <button className="controlTiempo"id="session-decrement" onClick={menosSesion}>-</button>
+        <button className="controlTiempo"id="session-increment" onClick={masSesion}>+</button>
       </div>
 
       <div className="subContenedor" id="contenedorControlesPrincipales">
-        <p id="timer-label">Estado: {this.state.enPausa && "EN PAUSA"} {this.state.enSesion && "EN SESION"}</p>
-        <p className="timer" id="time-left">{this.state.tiempo > 600 ? Math.floor(this.state.tiempo / 60) : "0" + Math.floor(this.state.tiempo / 60)}:{this.state.tiempo%60 > 9 ? this.state.tiempo % 60 : "0"+this.state.tiempo%60}</p>
-        <button className="botonImportante" id="start_stop" onClick={this.inicioFin}>Iniciar/Parar</button>
-        <button className="botonImportante reset" id="reset" onClick={this.reset}>Resetear</button>
-        <audio hidden ref={this.clip} id="beep" src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio>
+        <p id="timer-label">Estado: {enPausa && "EN PAUSA"} {enSesion && "EN SESION"}</p>
+        <p className="timer" id="time-left">{tiempo > 600 ? Math.floor(tiempo / 60) : "0" + Math.floor(tiempo / 60)}:{tiempo%60 > 9 ? tiempo % 60 : "0"+tiempo%60}</p>
+        <button className="botonImportante" id="start_stop" onClick={inicioFin}>Iniciar/Parar</button>
+        <button className="botonImportante reset" id="reset" onClick={reset}>Resetear</button>
+        {/* <audio hidden ref={this.clip} id="beep" src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio> */}
       </div>
     </div>
   );
 }
-}
+
 
 export default App;
