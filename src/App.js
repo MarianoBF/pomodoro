@@ -30,35 +30,40 @@ const [enPausa, setEnPausa] = useState(false);
 const [flagCero, setFlagCero] = useState(true);
 const [intervaloActivo, setIntervaloActivo] = useState(false);
 const intervalo = useRef(null);
+const tiempo2 = useRef(1500);
+
 
 const inicioFin = () => {
   if (enSesion === true && flagCero === true) {
-    setTiempo(sesion * 60)
+    tiempo2.current = (sesion * 60)
   }
   if (enPausa === true && flagCero === true) {
-    setTiempo(pausa * 60)
+    tiempo2.current = (pausa * 60)
   }
   if (activo === true) {
     clearInterval(intervalo.current); setIntervaloActivo(false);
   } else {
-  if (intervaloActivo === false) {intervalo.current = setInterval(()=>console.log("a"), 1000); setIntervaloActivo(true)}
+  if (intervaloActivo === false) {intervalo.current = setInterval(avanzar, 1000); setIntervaloActivo(true)}
     setFlagCero(false)
   }
   setActivo(!activo)
 }
 
 const avanzar = () => {
-  setTiempo(tiempo - 1);
-  if (tiempo < 0) {
+  tiempo2.current = tiempo2.current - 1;
+  setTiempo(()=>tiempo2.current);
+  if (tiempo2.current < 0) {
+    console.log("b")
     if (enSesion === true) {
-      setPausa(true); setEnSesion(false); setFlagCero(true); setActivo(false)
+      setEnPausa(true); setEnSesion(false); setFlagCero(true); setActivo(false)
       // this.clip.current.play()
       }
     else if (enPausa === true) {
-      setPausa(false); setEnSesion(true); setFlagCero(true); setActivo(false)
+      setEnPausa(false); setEnSesion(true); setFlagCero(true); setActivo(false)
       // this.clip.current.play()
        };
     inicioFin()
+
   }
 }
 
@@ -66,13 +71,13 @@ const reset = () => {
   clearInterval(intervalo.current);
 //   this.clip.current.pause() 
 //   this.clip.current.currentTime = 0; //rewind
-  setTiempo(1500); setActivo(false); setSesion(25); setPausa(5);
+  tiempo2.current = 1500; setActivo(false); setSesion(25); setPausa(5);
   setEnSesion(true); setEnPausa(false); setIntervaloActivo(false); setFlagCero(true);
 }
 
 const masPausa = () => {
   if (pausa < 60) { setPausa(pausa + 1);
-    if (enPausa === true) {setTiempo((pausa + 1) * 60) }
+    if (enPausa === true) {tiempo2.current = ((pausa + 1) * 60) }
   } else {
     return undefined
   }
@@ -80,7 +85,7 @@ const masPausa = () => {
 
 const menosPausa = () => {
   if (pausa > 1) { setPausa(pausa - 1);
-    if (enPausa === true) {setTiempo((pausa - 1) * 60) }
+    if (enPausa === true) {tiempo2.current = ((pausa - 1) * 60) }
   } else {
     return undefined
   }
@@ -88,7 +93,7 @@ const menosPausa = () => {
 
 const masSesion = () => {
   if (sesion < 60) { setSesion(sesion + 1);
-    if (enSesion === true) {setTiempo((sesion + 1) * 60) }
+    if (enSesion === true) {tiempo2.current = ((sesion + 1) * 60) }
   } else {
     return undefined
   }
@@ -96,7 +101,7 @@ const masSesion = () => {
 
 const menosSesion = () => {
   if (sesion > 1) { setSesion(sesion - 1)
-    if (enSesion === true) {setTiempo((sesion -1) * 60)}
+    if (enSesion === true) {tiempo2.current = ((sesion -1) * 60)}
   } else {
     return undefined;
   }
