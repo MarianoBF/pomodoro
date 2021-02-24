@@ -133,6 +133,8 @@ menosSesion = () => {
         <button className="botonImportante reset" id="reset" onClick={this.reset}>Resetear</button>
         <audio hidden ref={this.clip} id="beep" src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio>
       </div>
+
+      <p class="creditos">Fondo: Photo by Ioan F on Unsplash</p>
     </div>
   );
 }
