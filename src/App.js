@@ -22,22 +22,22 @@ class App extends React.Component {
 
   inicioFin = () => {
     if (this.state.enSesion === true && this.state.flagCero === true) {
-      this.setState({ tiempo: this.state.sesion * 60 });
+      this.setState({tiempo: this.state.sesion * 60});
     }
     if (this.state.enPausa === true && this.state.flagCero === true) {
-      this.setState({ tiempo: this.state.pausa * 60 });
+      this.setState({tiempo: this.state.pausa * 60});
     }
     if (this.state.activo === true) {
       clearInterval(this.Intervalo);
-      this.setState({ intervaloActivo: false }); //Donde existe el intervalo?
+      this.setState({intervaloActivo: false});
     } else {
       if (this.state.intervaloActivo === false) {
         this.Intervalo = setInterval(this.avanzar, 1000);
-        this.setState({ intervaloActivo: true });
+        this.setState({intervaloActivo: true});
       }
-      this.setState({ flagCero: false });
+      this.setState({flagCero: false});
     }
-    this.setState({ activo: !this.state.activo });
+    this.setState({activo: !this.state.activo});
   };
 
   avanzar = () => {
@@ -88,7 +88,7 @@ class App extends React.Component {
         pausa: this.state.pausa + 1,
       });
       if (this.state.enPausa === true) {
-        this.setState({ tiempo: (this.state.pausa + 1) * 60 });
+        this.setState({tiempo: (this.state.pausa + 1) * 60});
       }
     } else {
       return undefined;
@@ -101,7 +101,7 @@ class App extends React.Component {
         pausa: this.state.pausa - 1,
       });
       if (this.state.enPausa === true) {
-        this.setState({ tiempo: (this.state.pausa - 1) * 60 });
+        this.setState({tiempo: (this.state.pausa - 1) * 60});
       }
     } else {
       return undefined;
@@ -114,7 +114,7 @@ class App extends React.Component {
         sesion: this.state.sesion + 1,
       });
       if (this.state.enSesion === true) {
-        this.setState({ tiempo: (this.state.sesion + 1) * 60 });
+        this.setState({tiempo: (this.state.sesion + 1) * 60});
       }
     } else {
       return undefined;
@@ -127,12 +127,16 @@ class App extends React.Component {
         sesion: this.state.sesion - 1,
       });
       if (this.state.enSesion === true) {
-        this.setState({ tiempo: (this.state.sesion - 1) * 60 });
+        this.setState({tiempo: (this.state.sesion - 1) * 60});
       }
     } else {
       return undefined;
     }
   };
+
+  cambioDuracion = (e) => {
+    this.setState({[e.target.name]: (e.target.value)})
+  }
 
   render() {
     return (
@@ -142,21 +146,21 @@ class App extends React.Component {
           <input
             type="text"
             id="break-length"
+            onChange={this.cambioDuracion}
+            name="pausa"
             value={this.state.pausa}
-            readOnly
+            disabled={this.state.activo}
           />
           <button
             className="controlTiempo"
             id="break-decrement"
-            onClick={this.menosPausa}
-          >
+            onClick={this.menosPausa}>
             -
           </button>
           <button
             className="controlTiempo"
             id="break-increment"
-            onClick={this.masPausa}
-          >
+            onClick={this.masPausa}>
             +
           </button>
         </div>
@@ -165,30 +169,30 @@ class App extends React.Component {
           <p id="session-label">Largo de sesión</p>
           <input
             type="text"
+            name="sesion"
             id="session-length"
+            onChange={this.cambioDuracion}
             value={this.state.sesion}
-            readOnly
+            disabled={this.state.activo}
           />
           <button
             className="controlTiempo"
             id="session-decrement"
-            onClick={this.menosSesion}
-          >
+            onClick={this.menosSesion}>
             -
           </button>
           <button
             className="controlTiempo"
             id="session-increment"
-            onClick={this.masSesion}
-          >
+            onClick={this.masSesion}>
             +
           </button>
         </div>
 
         <div className="subContenedor" id="contenedorControlesPrincipales">
           <p id="timer-label">
-            Estado: {this.state.enPausa && "EN PAUSA"}{" "}
-            {this.state.enSesion && "EN SESION"}
+            Estado: {this.state.enPausa && this.state.activo  && "En pausa"}{" "}
+            {this.state.enSesion && this.state.activo && "En sesión"} {!this.state.activo && "Esperando..."}
           </p>
           <p className="timer" id="time-left">
             {this.state.tiempo > 600
@@ -202,23 +206,20 @@ class App extends React.Component {
           <button
             className="botonImportante"
             id="start_stop"
-            onClick={this.inicioFin}
-          >
+            onClick={this.inicioFin}>
             Iniciar/Parar
           </button>
           <button
             className="botonImportante reset"
             id="reset"
-            onClick={this.reset}
-          >
+            onClick={this.reset}>
             Resetear
           </button>
           <audio
             hidden
             ref={this.clip}
             id="beep"
-            src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"
-          ></audio>
+            src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio>
         </div>
 
         <p className="creditos">Fondo: Photo by Ioan F on Unsplash</p>
