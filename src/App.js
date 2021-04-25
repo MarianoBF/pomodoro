@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import Chicharra from "./chicharra.mp3"
 
 class App extends React.Component {
   constructor(props) {
@@ -219,7 +220,10 @@ class App extends React.Component {
             hidden
             ref={this.clip}
             id="beep"
-            src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio>
+            src={Chicharra}
+            >
+
+            </audio>
         </div>
 
         <p className="creditos">Fondo: Photo by Ioan F on Unsplash</p>
