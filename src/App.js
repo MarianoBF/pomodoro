@@ -1,24 +1,6 @@
 import './App.css';
 import React, {useState, useRef} from 'react';
 
-  // constructor(props) {
-  //   super(props)
-  //   this.clip = React.createRef()
-  //   this.state = {
-  //     tiempo: 1500,
-  //     activo: false,
-  //     id: 0,
-  //     pausa: 5,
-  //     sesion: 25,
-  //     enSesion: true,
-  //     enPausa: false,
-  //     flagCero: true,
-  //     intervaloActivo: false,
-  //   }
-  //   this.inicioFin = this.inicioFin.bind(this)
-  //   this.avanzar = this.avanzar.bind(this)
-
-  // };
 function App () {
 
 const [activo, setActivo] = useState(false);
@@ -53,7 +35,8 @@ const avanzar = () => {
   tiempo2.current = tiempo2.current - 1;
   setTiempo(()=>tiempo2.current);
   if (tiempo2.current < 0) {
-    console.log("b")
+    console.log("b");
+    clearInterval(intervalo.current)    
     if (enSesion === true) {
       setEnPausa(true); setEnSesion(false); setFlagCero(true); setActivo(false)
       // this.clip.current.play()
@@ -126,7 +109,7 @@ const menosSesion = () => {
 
       <div className="subContenedor" id="contenedorControlesPrincipales">
         <p id="timer-label">Estado: {enPausa && "EN PAUSA"} {enSesion && "EN SESION"}</p>
-        <p className="timer" id="time-left">{tiempo > 600 ? Math.floor(tiempo / 60) : "0" + Math.floor(tiempo / 60)}:{tiempo%60 > 9 ? tiempo % 60 : "0"+tiempo%60}</p>
+        <p className="timer" id="time-left">{tiempo2.current > 600 ? Math.floor(tiempo2.current / 60) : "0" + Math.floor(tiempo2.current / 60)}:{tiempo2.current%60 > 9 ? tiempo2.current % 60 : "0"+tiempo2.current%60}</p>
         <button className="botonImportante" id="start_stop" onClick={inicioFin}>Iniciar/Parar</button>
         <button className="botonImportante reset" id="reset" onClick={reset}>Resetear</button>
         {/* <audio hidden ref={this.clip} id="beep" src="http://freewavesamples.com/files/Korg-Triton-Slow-Choir-ST-C4.wav"></audio> */}
