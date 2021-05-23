@@ -12,9 +12,6 @@ function App() {
   const [flagChanged, setFlagChanged] = useState(false);
   const clip = useRef(null);
 
-  //INICIO
-  // enSesion ? setTiempo(sesion * 60) : setTiempo(pausa * 60);
-
   useEffect(() => {
     let intervalo = null;
 
@@ -22,6 +19,7 @@ function App() {
       intervalo = setInterval(() => setTiempo(tiempo => tiempo - 1), 1000);
     }
     if (tiempo === 0) {
+      clip.current.play();
       enSesion ? setTiempo(pausa * 60) : setTiempo(sesion * 60);
       setEnSesion(!enSesion);
     }
@@ -31,16 +29,14 @@ function App() {
   const handleStartStop = () => {
     if (flagChanged) {
       enSesion ? setTiempo(sesion * 60) : setTiempo(pausa * 60);
-      setFlagChanged(false)
+      setFlagChanged(false);
     }
     setActivo(!activo);
   };
 
-  //       // clip.current.play();
-
   const reset = () => {
     clip.current.pause();
-    clip.current.currentTime = 0; //rewind
+    clip.current.currentTime = 0;
     setActivo(false);
     setSesion(25);
     setPausa(5);
@@ -52,7 +48,7 @@ function App() {
   const masPausa = () => {
     if (pausa < 60) {
       setPausa(pausa + 1);
-      setFlagChanged(true)
+      setFlagChanged(true);
       if (activo) {
         setTiempo((pausa + 1) * 60);
       }
@@ -62,7 +58,7 @@ function App() {
   const menosPausa = () => {
     if (pausa > 1) {
       setPausa(pausa - 1);
-      setFlagChanged(true)
+      setFlagChanged(true);
       if (activo) {
         setTiempo((pausa - 1) * 60);
       }
@@ -72,7 +68,7 @@ function App() {
   const masSesion = () => {
     if (sesion < 60) {
       setSesion(sesion + 1);
-      setFlagChanged(true)
+      setFlagChanged(true);
       if (activo) {
         setTiempo((sesion + 1) * 60);
       }
@@ -82,7 +78,7 @@ function App() {
   const menosSesion = () => {
     if (sesion > 1) {
       setSesion(sesion - 1);
-      setFlagChanged(true)
+      setFlagChanged(true);
       if (activo) {
         setTiempo((sesion - 1) * 60);
       }
@@ -128,15 +124,6 @@ function App() {
       <div className="subContenedor" id="contenedorControlesPrincipales">
         <p id="timer-label">Estado: {enSesion ? "EN SESION" : "EN PAUSA"}</p>
         <Clock time={tiempo} />
-        {/* <p className="timer" id="time-left">
-          {tiempo2.current > 600
-            ? Math.floor(tiempo2.current / 60)
-            : "0" + Math.floor(tiempo2.current / 60)}
-          :
-          {tiempo2.current % 60 > 9
-            ? tiempo2.current % 60
-            : "0" + (tiempo2.current % 60)}
-        </p> */}
         <button
           className="botonImportante"
           id="start_stop"
