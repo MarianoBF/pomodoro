@@ -5,9 +5,9 @@ import Clock from "./components/Clock";
 
 function App() {
   const [activo, setActivo] = useState(false);
-  const [tiempo, setTiempo] = useState(5);
-  const [pausa, setPausa] = useState(0.1);
-  const [sesion, setSesion] = useState(0.2);
+  const [tiempo, setTiempo] = useState(1500);
+  const [pausa, setPausa] = useState(5);
+  const [sesion, setSesion] = useState(25);
   const [enSesion, setEnSesion] = useState(true);
   const [flagChanged, setFlagChanged] = useState(false);
   const clip = useRef(null);
@@ -122,7 +122,7 @@ function App() {
       </div>
 
       <div className="subContenedor" id="contenedorControlesPrincipales">
-        <p id="timer-label">Estado: {enSesion ? "EN SESION" : "EN PAUSA"}</p>
+        <p id="timer-label">Estado: {!activo ? "Esperando..." : enSesion ? "EN SESION" : "EN PAUSA"}</p>
         <Clock time={tiempo} />
         <button
           className="botonImportante"
