@@ -9,11 +9,7 @@ function App() {
   const [pausa, setPausa] = useState(0.1);
   const [sesion, setSesion] = useState(0.2);
   const [enSesion, setEnSesion] = useState(true);
-  const [enPausa, setEnPausa] = useState(false);
-  const [flagCero, setFlagCero] = useState(true);
-  const [intervaloActivo, setIntervaloActivo] = useState(false);
-  // const intervalo = useRef(null);
-  const tiempo2 = useRef(1500);
+  const [flagChanged, setFlagChanged] = useState(false);
   const clip = useRef(null);
 
   //INICIO
@@ -23,77 +19,73 @@ function App() {
     let intervalo = null;
 
     if (activo && tiempo >= 1) {
-        intervalo = setInterval(() => setTiempo(tiempo => tiempo - 1), 1000);
+      intervalo = setInterval(() => setTiempo(tiempo => tiempo - 1), 1000);
     }
     if (tiempo === 0) {
       enSesion ? setTiempo(pausa * 60) : setTiempo(sesion * 60);
       setEnSesion(!enSesion);
     }
     return () => clearInterval(intervalo);
-  }, [activo, tiempo]);
+  }, [activo, enSesion, pausa, sesion, tiempo]);
 
   const handleStartStop = () => {
+    if (flagChanged) {
+      enSesion ? setTiempo(sesion * 60) : setTiempo(pausa * 60);
+      setFlagChanged(false)
+    }
     setActivo(!activo);
   };
 
   //       // clip.current.play();
 
   const reset = () => {
-    // ARREGLAR
-    // clearInterval(intervalo.current);
     clip.current.pause();
     clip.current.currentTime = 0; //rewind
-    tiempo2.current = 1500;
     setActivo(false);
-    setSesion(0.1);
-    setPausa(0.1);
+    setSesion(25);
+    setPausa(5);
     setEnSesion(true);
-    setEnPausa(false);
-    setIntervaloActivo(false);
-    setFlagCero(true);
+    setTiempo(1500);
+    setFlagChanged(false);
   };
 
   const masPausa = () => {
     if (pausa < 60) {
       setPausa(pausa + 1);
-      if (enPausa === true) {
-        tiempo2.current = (pausa + 1) * 60;
+      setFlagChanged(true)
+      if (activo) {
+        setTiempo((pausa + 1) * 60);
       }
-    } else {
-      return undefined;
     }
   };
 
   const menosPausa = () => {
     if (pausa > 1) {
       setPausa(pausa - 1);
-      if (enPausa === true) {
-        tiempo2.current = (pausa - 1) * 60;
+      setFlagChanged(true)
+      if (activo) {
+        setTiempo((pausa - 1) * 60);
       }
-    } else {
-      return undefined;
     }
   };
 
   const masSesion = () => {
     if (sesion < 60) {
       setSesion(sesion + 1);
-      if (enSesion === true) {
-        tiempo2.current = (sesion + 1) * 60;
+      setFlagChanged(true)
+      if (activo) {
+        setTiempo((sesion + 1) * 60);
       }
-    } else {
-      return undefined;
     }
   };
 
   const menosSesion = () => {
     if (sesion > 1) {
       setSesion(sesion - 1);
-      if (enSesion === true) {
-        tiempo2.current = (sesion - 1) * 60;
+      setFlagChanged(true)
+      if (activo) {
+        setTiempo((sesion - 1) * 60);
       }
-    } else {
-      return undefined;
     }
   };
 
