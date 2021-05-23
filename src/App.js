@@ -1,83 +1,46 @@
 import "./App.css";
 import Chicharra from "./chicharra.mp3";
 import React, {useState, useRef, useEffect} from "react";
-import Clock from "./components/Clock"
+import Clock from "./components/Clock";
 
 function App() {
   const [activo, setActivo] = useState(false);
-  const [tiempo, setTiempo] = useState(1500);
+  const [tiempo, setTiempo] = useState(5);
   const [pausa, setPausa] = useState(0.1);
-  const [sesion, setSesion] = useState(0.1);
+  const [sesion, setSesion] = useState(0.2);
   const [enSesion, setEnSesion] = useState(true);
   const [enPausa, setEnPausa] = useState(false);
   const [flagCero, setFlagCero] = useState(true);
   const [intervaloActivo, setIntervaloActivo] = useState(false);
-  const intervalo = useRef(null);
+  // const intervalo = useRef(null);
   const tiempo2 = useRef(1500);
   const clip = useRef(null);
 
+  //INICIO
+  // enSesion ? setTiempo(sesion * 60) : setTiempo(pausa * 60);
 
-useEffect(()=>{
+  useEffect(() => {
+    let intervalo = null;
 
-  let intervalo = null;
-
-  if (activo && tiempo >= 1) {
-    if (enSesion===true) {
-      intervalo = setInterval(()=>setTiempo((tiempo) => tiempo - 1), 1000);
+    if (activo && tiempo >= 1) {
+        intervalo = setInterval(() => setTiempo(tiempo => tiempo - 1), 1000);
     }
     if (tiempo === 0) {
-      enSesion ? setTiempo(pausa*60) : setTiempo(sesion*60)
-      setEnSesion(!enSesion)
+      enSesion ? setTiempo(pausa * 60) : setTiempo(sesion * 60);
+      setEnSesion(!enSesion);
     }
-  } 
-  return () => clearInterval(intervalo);
-},[activo])
+    return () => clearInterval(intervalo);
+  }, [activo, tiempo]);
 
+  const handleStartStop = () => {
+    setActivo(!activo);
+  };
 
-
-const handleStartStop = () => {
-  enSesion ? setTiempo(sesion*60) : setTiempo(pausa*60)
-  setActivo(!activo)
-}
-
-
-  //   if (activo === true) {
-  //     clearInterval(intervalo.current);
-  //     setIntervaloActivo(false);
-  //   } else {
-  //     if (intervaloActivo === false) {
-  //       setIntervaloActivo(true);
-  //     }
-  //     setFlagCero(false);
-  //   }
-  //   setActivo(!activo);
-  // };
-
-  // const avanzar = () => {
-  //   tiempo2.current = tiempo2.current - 1;
-  //   setTiempo(() => tiempo2.current);
-  //   if (tiempo2.current <= 0) {
-  //     if (enSesion === true) {
-  //       setEnPausa(true);
-  //       setEnSesion(false);
-  //       setFlagCero(true);
-  //       setActivo(false);
   //       // clip.current.play();
-  //       console.log("1")
-  //     } else if (enPausa === true) {
-  //       setEnPausa(false);
-  //       setEnSesion(true);
-  //       setFlagCero(true);
-  //       setActivo(false);
-  //       // clip.current.play();
-  //       console.log("b");
-  //     }
-  //     // inicioFin();
-  //   }
-  // };
 
-  const reset = () => { // ARREGLAR
-    clearInterval(intervalo.current);
+  const reset = () => {
+    // ARREGLAR
+    // clearInterval(intervalo.current);
     clip.current.pause();
     clip.current.currentTime = 0; //rewind
     tiempo2.current = 1500;
@@ -171,9 +134,7 @@ const handleStartStop = () => {
       </div>
 
       <div className="subContenedor" id="contenedorControlesPrincipales">
-        <p id="timer-label">
-          Estado: {enPausa && "EN PAUSA"} {enSesion && "EN SESION"}
-        </p>
+        <p id="timer-label">Estado: {enSesion ? "EN SESION" : "EN PAUSA"}</p>
         <Clock time={tiempo} />
         {/* <p className="timer" id="time-left">
           {tiempo2.current > 600
@@ -184,7 +145,10 @@ const handleStartStop = () => {
             ? tiempo2.current % 60
             : "0" + (tiempo2.current % 60)}
         </p> */}
-        <button className="botonImportante" id="start_stop" onClick={handleStartStop}>
+        <button
+          className="botonImportante"
+          id="start_stop"
+          onClick={handleStartStop}>
           Iniciar/Parar
         </button>
         <button className="botonImportante reset" id="reset" onClick={reset}>
