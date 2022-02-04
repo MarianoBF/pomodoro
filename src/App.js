@@ -88,7 +88,7 @@ function App() {
   return (
     <div className="App">
       <div className="subContenedor" id="contenedorPausa">
-        <p id="break-label">Tiempo de pausa</p>
+        <p id="break-label">Tiempo de pausa (minutos)</p>
         <input type="text" id="break-length" value={pausa} readOnly />
         <button
           className="controlTiempo"
@@ -105,7 +105,7 @@ function App() {
       </div>
 
       <div className="subContenedor" id="contenedorSesion">
-        <p id="session-label">Largo de sesión</p>
+        <p id="session-label">Largo de sesión (minutos)</p>
         <input type="text" id="session-length" value={sesion} readOnly />
         <button
           className="controlTiempo"
@@ -122,7 +122,7 @@ function App() {
       </div>
 
       <div className="subContenedor" id="contenedorControlesPrincipales">
-        <p id="timer-label">Estado: {!activo ? "Esperando..." : enSesion ? "EN SESION" : "EN PAUSA"}</p>
+        <p id="timer-label">Estado: {(!activo  && !enSesion) ? "Esperando instrucciones..." : (enSesion && activo) ? "EN SESION" : "EN PAUSA"}</p>
         <Clock time={tiempo} />
         <button
           className="botonImportante"
